@@ -6,7 +6,7 @@ img.src = "./media/flappy-bird-set.png";
 /// General settings
 let gamePlaying = false;
 const gravity = 0.08;
-const speed = 1.5;
+let speed = 1.5;
 const size = [51, 36];
 const jump = -4.5;
 const cTenth = canvas.width / 10;
@@ -24,6 +24,14 @@ let index = 0,
   pipes = [],
   flight,
   flyHeight;
+
+(() => {
+  if (localStorage.bestScore) {
+    bestScore = JSON.parse(localStorage.bestScore);
+  } else {
+    bestScore = currentScore;
+  }
+})();
 
 const setup = () => {
   currentScore = 0;
@@ -144,6 +152,9 @@ const render = () => {
       ) {
         gamePlaying = false;
         setup();
+
+        localStorage.bestScore = JSON.stringify(bestScore);
+        console.log(JSON.parse(localStorage.bestScore));
       }
     });
   }
@@ -159,9 +170,11 @@ const render = () => {
 setup();
 img.onload = render;
 document.addEventListener("click", () => (gamePlaying = true));
+
 window.onclick = () => (flight = jump);
 
 window.addEventListener("keypress", (e) => {
+  gamePlaying = true;
   if (e.key == " " || e.code == "Space") {
     flight = jump;
   }
